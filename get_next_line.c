@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/06 16:50:47 by armosnie          #+#    #+#             */
-/*   Updated: 2024/12/09 15:41:06 by armosnie         ###   ########.fr       */
+/*   Created: 2024/12/16 14:50:20 by armosnie          #+#    #+#             */
+/*   Updated: 2024/12/16 15:47:29 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,50 +14,47 @@
 
 char    *get_next_line(int fd)
 {
+    int size_read;
+    char    *str;
+    char *line;
+    char static buf[BUFFER_SIZE + 1];
+
+    // if (fd == 0)
+    //     return (NULL);
+    str = ft_strjoin(str, buf);
+    while (size_read == BUFFER_SIZE || !ft_strchr(buf, '\n'))
+    {
+        size_read = read(fd, buf, BUFFER_SIZE);
+        if (size_read == -1)
+            return (NULL);
+        str = ft_strjoin(str, buf);
+    }
+    line = ft_strndup(str, '\n');
+    ft_clean_str(buf);
+    return (line);
+}
+
+char    *ft_clean_str(char *str)
+{
     int i;
     int j;
-    char static   *stash;
-    char    *buf;
-    char    *line;
-    
+
     i = 0;
     j = 0;
-    fd = open(buf, O_RDONLY);
-    if (fd == NULL)
-        return (NULL);
-    while (buf[i])
+    while (str[i])
     {
-        ft_strjoin(read(fd, buf, BUFFER_SIZE), &stash[j]);
-        j += 5;
-        check_return(stash, line);
-    }  
-    return (0);
-}
-
-char    clean_stash(char *stash)
-{
-       
-}
-
-char    clean_line(char *line)
-{
-    
-}
-
-size_t  check_return(char *stash, char *line)
-{
-    int i;
-
-    i = 0;
-    while (stash[i])
-    {
-        if (stash[i] == '\n')
+        if(str[i]== '\n')
         {
-            ft_strjoin(stash, line);
+            i++;
+            break;
         }
         i++;
     }
-    return (stash);
+    while (str[i])
+    {
+        str[j] = str[i];
+        j++;
+        i++;
+    }
+    return (str);
 }
-
-
