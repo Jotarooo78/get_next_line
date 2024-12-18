@@ -6,20 +6,20 @@
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 14:33:21 by armosnie          #+#    #+#             */
-/*   Updated: 2024/12/16 15:18:00 by armosnie         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:25:15 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int ft_strlen(char *s)
+int	ft_strlen(char *s)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (s[i])
-        i++;
-    return (i);
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -33,7 +33,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	join = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (join == NULL)
 		return (NULL);
-	while (s1[i])
+	while (s1[i] && s1)
 	{
 		join[i] = s1[i];
 		i++;
@@ -49,7 +49,7 @@ char	*ft_strjoin(char *s1, char *s2)
 
 int	ft_strchr(char *s, int c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i])
@@ -61,15 +61,49 @@ int	ft_strchr(char *s, int c)
 	return (0);
 }
 
-char	ft_strcpy(char *s1, char *s2)
+char	*ft_strndup(char *buf, int c)
 {
-	int	i;
+	char	*dup;
+	int		i;
 
 	i = 0;
-	while (s1[i])
+	dup = malloc(sizeof(char) * (ft_strlen(buf) + 1));
+	if (dup == NULL)
+		return (NULL);
+	while (buf[i] && buf[i] != c)
 	{
-		s2[i] = s1[i];
+		dup[i] = buf[i];
 		i++;
 	}
-	return (s2);
+	dup[i] = '\0';
+	return (dup);
 }
+
+// void	*ft_calloc(size_t nmemb, size_t size)
+// {
+// 	void	*res;
+
+// 	if (nmemb == INT_MAX && size == INT_MAX)
+// 		return (NULL);
+// 	res = malloc(nmemb * size);
+// 	if (res == NULL)
+// 		return (NULL);
+// 	ft_memset(res, 0, nmemb * size);
+// 	return (res);
+// }
+
+// void	*ft_memset(void *s, int c, size_t n)
+// {
+// 	size_t i;
+// 	char *str;
+
+// 	i = 0;
+// 	str = (char *)s;
+// 	while (n)
+// 	{
+// 		str[i] = (char)c;
+// 		i++;
+// 		n--;
+// 	}
+// 	return (str);
+// }
