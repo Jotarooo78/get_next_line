@@ -6,15 +6,16 @@
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 14:50:20 by armosnie          #+#    #+#             */
-/*   Updated: 2024/12/18 17:42:07 by armosnie         ###   ########.fr       */
+/*   Updated: 2024/12/19 17:32:41 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_clean_str(char *str)
+char	*ft_clear_str(char *str)
 {
-	int	i;
+	int		i;
+	char	*new_str;
 
 	i = 0;
 	while (str[i])
@@ -26,14 +27,30 @@ char	*ft_clean_str(char *str)
 		}
 		i++;
 	}
-	if (str != NULL)
-	{
-		str = ft_strndup(str + i, '\n');
-	}
-	return (str);
+	new_str = ft_strndup(str + i, '\n');
+	free(str);
+	return (new_str);
 }
 
-char	*return_read(char buf[BUFFER_SIZE]);
+void	free_all_array(char *str)
+{
+	if (str != NULL)
+		free(str);
+}
+
+char	*stock_and_replace(char *str, char *buf)
+{
+	char	*cache;
+
+	cache = ft_strjoin(str, buf);
+	if (cache == NULL)
+	{
+		free(str);
+		return (NULL);
+	}
+	free(str);
+	return (cache);
+}
 
 char	*get_next_line(int fd)
 {
@@ -42,6 +59,8 @@ char	*get_next_line(int fd)
 	static char	*str;
 	char		*line;
 
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
 	size_read = BUFFER_SIZE;
 	if (str == NULL)
 		str = ft_strndup("", '\n');
@@ -50,29 +69,37 @@ char	*get_next_line(int fd)
 		size_read = read(fd, buf, BUFFER_SIZE);
 		if (size_read == -1)
 		{
-			free(str);
+			free_all_array(str);
 			return (NULL);
 		}
 		buf[size_read] = '\0';
-		str = ft_strjoin(str, buf);
+		str = stock_and_replace(str, buf);
+	}
+	if (str[0] == '\0')
+	{
+		free_all_array(str);
+		return (NULL);
 	}
 	line = ft_strndup(str, '\n');
-	str = ft_clean_str(str);
+	str = ft_clear_str(str);
 	return (line);
 }
 
-int	main(void)
-{
-	int		fd;
-	char	*line;
+// int	main(void)
+// {
+// 	int		fd;
+// 	char	*line;
 
-	fd = open("text.txt", O_RDONLY);
-	line = get_next_line(fd);
-	printf("%s\n", line);
-	line = get_next_line(fd);
-	printf("%s\n", line);
-	line = get_next_line(fd);
-	printf("%s\n", line);
-	close(fd);
-	return (0);
-}
+// 	fd = open("text.txt", O_RDONLY);
+// 	line = get_next_line(fd);
+// 	if (fd == -1)
+// 		return (printf("error"));
+// 	while (line != NULL)
+// 	{
+// 		printf("%s\n", line);
+// 		free(line);
+// 		line = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
