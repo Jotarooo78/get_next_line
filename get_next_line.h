@@ -6,16 +6,15 @@
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 14:34:01 by armosnie          #+#    #+#             */
-/*   Updated: 2024/12/19 16:24:38 by armosnie         ###   ########.fr       */
+/*   Updated: 2024/12/30 15:00:43 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GNL
-# define GNL
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
 # include <fcntl.h>
 # include <limits.h>
-# include <stdio.h> // a supprimer
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -25,12 +24,10 @@
 # endif
 
 char	*get_next_line(int fd);
-char	*ft_strjoin(char *s1, char *s2);
-int		ft_strchr(char *s, int c);
-char	*fill_and_clean_str(char *str);
-char	*ft_strndup(char *buf, int c);
-// void	*ft_calloc(size_t nmemb, size_t size);
-// void	*ft_memset(void *s, int c, size_t n);
-int		ft_strlen(char *s);
+char	*add_buffer(char *str, char *buffer);
+void	clear_buffer(char *buffer);
+int		ft_strchr(char *str, char c);
+size_t	ft_strlen(char *str);
+char	*ft_strndup(char *str, char c);
 
 #endif
