@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 14:50:20 by armosnie          #+#    #+#             */
-/*   Updated: 2025/01/10 13:22:58 by armosnie         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:23:09 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*add_buffer(char *str, char *buffer)
 {
@@ -64,22 +64,22 @@ void	clear_buffer(char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
+	static char	buffer[1024][BUFFER_SIZE + 1];
 	char		*str;
 	char		*line;
 	int			size_read;
 
 	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
 		return (NULL);
-	str = ft_strndup(buffer, '\0');
+	str = ft_strndup(buffer[fd], '\0');
 	size_read = BUFFER_SIZE;
-	while (size_read == BUFFER_SIZE && ft_strchr(buffer, '\n') == 0)
+	while (size_read == BUFFER_SIZE && ft_strchr(buffer[fd], '\n') == 0)
 	{
-		size_read = read(fd, buffer, BUFFER_SIZE);
+		size_read = read(fd, buffer[fd], BUFFER_SIZE);
 		if (size_read == -1)
-			return (buffer[0] = '\0', free(str), NULL);
-		buffer[size_read] = '\0';
-		str = add_buffer(str, buffer);
+			return (buffer[fd][0] = '\0', free(str), NULL);
+		buffer[fd][size_read] = '\0';
+		str = add_buffer(str, buffer[fd]);
 		if (str == NULL)
 			return (NULL);
 	}
@@ -87,23 +87,39 @@ char	*get_next_line(int fd)
 		return (free(str), NULL);
 	line = ft_strndup(str, '\n');
 	free(str);
-	clear_buffer(buffer);
+	clear_buffer(buffer[fd]);
 	return (line);
 }
-#include <stdio.h>
-int	main(void)
-{
-	int fd;
-	char *line;
+// #include <stdio.h>
+// int	main(void)
+// {
+// 	int fd;
+// 	int fd2;
+// 	char *line;
+// 	char *line2;
 
-	fd = open("text.txt", O_RDONLY);
-	line = get_next_line(fd);
-	while (line != NULL)
-	{
-		printf("%s", line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	return (0);
-}
+// 	fd = open("text.txt", O_RDONLY);
+// 	fd2 = open("text2.txt", O_RDONLY);
+
+// 	line = get_next_line(fd);
+// 	if (fd == -1)
+// 		return (printf("error"));
+// 	while (line != NULL)
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 		line = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	line2 = get_next_line(fd2);
+// 	if (fd == -1)
+// 		return (printf("error"));
+// 	while (line2 != NULL)
+// 	{
+// 		printf("%s", line2);
+// 		free(line2);
+// 		line2 = get_next_line(fd2);
+// 	}
+// 	close(fd2);
+// 	return (0);
+// }
