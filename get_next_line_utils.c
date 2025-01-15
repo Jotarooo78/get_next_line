@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 12:27:56 by armosnie          #+#    #+#             */
-/*   Updated: 2025/01/15 16:50:04 by armosnie         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:55:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static  int ft_strlen(char *str)
+int ft_strlen(char *str)
 {
     int i;
 
@@ -22,7 +22,7 @@ static  int ft_strlen(char *str)
     return (i);
 }
 
-static int ft_strchr(char *str, char c)
+int ft_strchr(char *str, char c)
 {
     int i;
     
@@ -36,7 +36,7 @@ static int ft_strchr(char *str, char c)
     return (0); 
 }
 
-static char    *ft_strdup(char *str)
+char    *ft_strndup(char *str)
 {
     char *dup;
     int i;
@@ -45,7 +45,7 @@ static char    *ft_strdup(char *str)
     if (dup == NULL)
         return (NULL);
     i = 0;
-    while (str[i])
+    while (str[i] && str[i - 1] != '\n')
     {
         dup[i] = str[i];
         i++;
@@ -54,12 +54,17 @@ static char    *ft_strdup(char *str)
     return (dup);
 }
 
-static char    *ft_strjoin(char *start, char *end)
+char    *ft_strjoin(char *start, char *end)
 {
     char    *new_str;
     int i;
     int j;
-    
+    if (start == NULL || end == NULL)
+        return (NULL);
+    if (start == NULL)
+        start = ft_strndup("");
+    if (end == NULL)
+        end = ft_strndup("");
     new_str = malloc(sizeof(char) * (ft_strlen(start) + ft_strlen(end) + 1));
     if (new_str == NULL)
         return (NULL);
