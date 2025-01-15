@@ -5,105 +5,48 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 14:50:20 by armosnie          #+#    #+#             */
-/*   Updated: 2025/01/10 17:02:50 by armosnie         ###   ########.fr       */
+/*   Created: 2025/01/15 12:27:51 by armosnie          #+#    #+#             */
+/*   Updated: 2025/01/15 16:59:03 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*add_buffer(char *str, char *buffer)
+int ft_read(int fd, char *buffer)
 {
-	char	*new_str;
-	size_t	i;
-	size_t	j;
-
-	new_str = malloc(ft_strlen(str) + ft_strlen(buffer) + 1);
-	if (new_str == NULL)
-		return (NULL);
-	i = 0;
-	while (str[i])
-	{
-		new_str[i] = str[i];
-		i++;
-	}
-	j = 0;
-	while (buffer[j])
-	{
-		new_str[i + j] = buffer[j];
-		j++;
-	}
-	free(str);
-	new_str[i + j] = '\0';
-	return (new_str);
+    int size_read;
+    
+    size_read = read(fd, buffer, BUFFER_SIZE);
+    if (size_read == -1)
+        return(buffer[0] = '\0', free(buffer), NULL);
+    
 }
 
-void	clear_buffer(char *buffer)
+void    clear_buffer(char *str)
 {
-	size_t	i;
-	size_t	j;
+    int i;
+    int j;
 
-	i = 0;
-	while (buffer[i])
-	{
-		if (buffer[i] == '\n')
-		{
-			i++;
-			break ;
-		}
-		i++;
-	}
-	j = 0;
-	while (buffer[j])
-	{
-		buffer[j] = buffer[i + j];
-		j++;
-	}
-	buffer[i + j] = '\0';
+    i = 0;
+    j = 0;
+    while (str[i] && ft_strchr(str[i], '\n') == 0)
+        i++;
+    while (str[j])
+    {
+        str[j] = str[i + j];
+        j++;
+    }
 }
 
-char	*get_next_line(int fd)
+char    *get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
-	char		*str;
-	char		*line;
-	int			size_read;
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	str = ft_strndup(buffer, '\0');
-	size_read = BUFFER_SIZE;
-	while (size_read == BUFFER_SIZE && ft_strchr(buffer, '\n') == 0)
-	{
-		size_read = read(fd, buffer, BUFFER_SIZE);
-		if (size_read == -1)
-			return (buffer[0] = '\0', free(str), NULL);
-		buffer[size_read] = '\0';
-		str = add_buffer(str, buffer);
-		if (str == NULL)
-			return (NULL);
-	}
-	if (str[0] == '\0')
-		return (free(str), NULL);
-	line = ft_strndup(str, '\n');
-	free(str);
-	clear_buffer(buffer);
-	return (line);
-}
-#include <stdio.h>
-int	main(void)
-{
-	int fd;
-	char *line;
-
-	fd = open("text.txt", O_RDONLY);
-	line = get_next_line(fd);
-	while (line != NULL)
-	{
-		printf("%s", line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	return (0);
+    static char *buffer = {0};
+    char    *line;
+    int     size_read;
+    
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    size_read = BUFFER_SIZE;
+    line = ft_strdup(buffer);
+    while (size_read == BUFFER_SIZE)
 }
