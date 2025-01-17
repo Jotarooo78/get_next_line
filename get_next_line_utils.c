@@ -5,22 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/16 10:20:23 by armosnie          #+#    #+#             */
-/*   Updated: 2025/01/16 10:51:18 by armosnie         ###   ########.fr       */
+/*   Created: 2024/12/09 14:33:21 by armosnie          #+#    #+#             */
+/*   Updated: 2025/01/06 18:04:05 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-int	ft_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
 
 int	ft_strchr(char *str, char c)
 {
@@ -36,20 +26,35 @@ int	ft_strchr(char *str, char c)
 	return (0);
 }
 
-char    *ft_strdup(char *str)
+size_t	ft_strlen(char *str)
 {
-    char *dup;
-    int i;
+	char	*len;
 
-    dup = malloc(sizeof(char) * (ft_strlen(str)+ 1));
-    if (dup == NULL)
-        return (NULL);
-    i = 0;
-    while (str[i])
-    {
-        dup[i] = str[i];
-        i++;
-    }
-    dup[i] = '\0';
-    return (dup);
+	len = str;
+	while (*len)
+		len++;
+	return (len - str);
+}
+
+char	*ft_strndup(char *str, char c)
+{
+	size_t	i;
+	char	*dup;
+
+	dup = malloc(ft_strlen(str) + 1);
+	if (dup == NULL)
+		return (NULL);
+	i = 0;
+	while (str[i])
+	{
+		dup[i] = str[i];
+		if (str[i] == c)
+		{
+			i++;
+			break ;
+		}
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }

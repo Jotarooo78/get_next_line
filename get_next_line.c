@@ -5,41 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/16 10:20:25 by armosnie          #+#    #+#             */
-/*   Updated: 2025/01/16 11:15:50 by armosnie         ###   ########.fr       */
+/*   Created: 2024/12/16 14:50:20 by armosnie          #+#    #+#             */
+/*   Updated: 2025/01/17 10:30:43 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	copy_rest(char *dest, char *src)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (src[i])
-	{
-        if (src[i] == '\n')
-        {
-            i++;
-            break ;
-        }
-        i++;
-    }
-	while (src[i])
-		dest[j++] = src[i++];
-	dest[j] = '\0';
-}
-
 char	*add_buffer(char *str, char *buffer)
 {
 	char	*new_str;
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
 
-	new_str = malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(buffer) + 1));
+	new_str = malloc(ft_strlen(str) + ft_strlen(buffer) + 1);
 	if (new_str == NULL)
 		return (NULL);
 	i = 0;
@@ -54,75 +33,78 @@ char	*add_buffer(char *str, char *buffer)
 		new_str[i + j] = buffer[j];
 		j++;
 	}
+	free(str);
 	new_str[i + j] = '\0';
-    free(str);
 	return (new_str);
 }
 
-char	*dup_line(char *src)
+void	clear_buffer(char *buffer)
 {
-    char	*dup;
-	int		i;
+	size_t	i;
+	size_t	j;
 
 	i = 0;
-    while (src[i] != '\n')
-		i++;
-	dup = malloc((i + 2) * sizeof(char));
-	if (dup == NULL)
-		return (NULL);
-	i = 0;
-	while (src[i])
+	while (buffer[i])
 	{
-		dup[i] = src[i];
-		i++;
-		if (src[i] == '\n')
+		if (buffer[i] == '\n')
+		{
+			i++;
 			break ;
+		}
+		i++;
 	}
-	dup[i] = '\0';
-	free(src);
-	return (dup);
+	j = 0;
+	while (buffer[j + i])
+	{
+		buffer[j] = buffer[i + j];
+		j++;
+	}
+	buffer[j] = '\0';
 }
 
 char	*get_next_line(int fd)
 {
-    static char	buffer[BUFFER_SIZE + 1];
-	int			size_read;
+	static char	buffer[BUFFER_SIZE + 1];
+	char		*str;
 	char		*line;
+	int			size_read;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	str = ft_strndup(buffer, '\0');
 	size_read = BUFFER_SIZE;
-	line = ft_strdup(buffer);
-	while (ft_strchr(buffer, '\n') == 0 && size_read == BUFFER_SIZE)
+	while (size_read == BUFFER_SIZE && ft_strchr(buffer, '\n') == 0)
 	{
 		size_read = read(fd, buffer, BUFFER_SIZE);
-		if (size_read <= 0)
-			if (buffer[0] == '\0' && line[0] ==  '\0')
-				return (free(line), NULL);
-        buffer[size_read] = '\0';
-		line = add_buffer(line, buffer);
+		if (size_read == -1)
+			return (buffer[0] = '\0', free(str), NULL);
+		buffer[size_read] = '\0';
+		str = add_buffer(str, buffer);
+		if (str == NULL)
+			return (NULL);
 	}
-	if (line[0] == '\0')
-		return (free(line), NULL);
-	if (ft_strchr(line, '\n') == 0)
-		return (buffer[0] = '\0', line);
-	return (copy_rest(buffer, line), line = dup_line(line));
+	if (str[0] == '\0')
+		return (free(str), NULL);
+	line = ft_strndup(str, '\n');
+	free(str);
+	clear_buffer(buffer);
+	return (line);
 }
+// #include <stdio.h>
+// int	main(int ac, char **av)
+// {
+// 	int fd;
+// 	char *line;
 
-#include <stdio.h>
-int	main(void)
-{
-	int fd;
-	char *line;
-
-	fd = open("text.txt", O_RDONLY);
-	line = get_next_line(fd);
-	while (line != NULL)
-	{
-		printf("%s", line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	return (0);
-}
+// 	(void)ac;
+// 	fd = open(av[1], O_RDONLY);
+// 	line = get_next_line(fd);
+// 	while (line != NULL)
+// 	{
+// 		printf(">%s", line);
+// 		free(line);
+// 		line = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }

@@ -6,7 +6,7 @@
 /*   By: armosnie <armosnie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 14:50:20 by armosnie          #+#    #+#             */
-/*   Updated: 2025/01/10 16:49:19 by armosnie         ###   ########.fr       */
+/*   Updated: 2025/01/17 10:39:29 by armosnie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ void	clear_buffer(char *buffer)
 		i++;
 	}
 	j = 0;
-	while (buffer[j])
+	while (buffer[j + i])
 	{
 		buffer[j] = buffer[i + j];
 		j++;
 	}
-	buffer[i + j] = '\0';
+	buffer[j] = '\0';
 }
 
 char	*get_next_line(int fd)
@@ -69,7 +69,7 @@ char	*get_next_line(int fd)
 	char		*line;
 	int			size_read;
 
-	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	str = ft_strndup(buffer[fd], '\0');
 	size_read = BUFFER_SIZE;
